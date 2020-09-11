@@ -1,0 +1,24 @@
+{
+    "name": "Weda-Jeez",
+    "short_name": "Weda",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#fff",
+    "description": "A weather fetching app.",
+    "orientation": "portrait",
+    "theme_color": "green",
+    "icons": [
+        {
+            "src": "./Images/pers195.png",
+            "sizes": "195x195",
+            "type": "image/png",
+            "purpose": "maskable" 
+        },
+        {
+            "src": "./Images/pers512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ]
+}
