@@ -1,31 +1,25 @@
- const apiKey = "ce85af040d563e8dfec708907027d03a";
-// https://api.openweathermap.org/data/2.5/onecall?lat=33.441792&lon=-94.037689&exclude=hourly,daily&appid=
+const apiKey = "ce85af040d563e8dfec708907027d03a";
+
 
 window.addEventListener('load', () => {
     registerWorker();
 })
-function registerWorker() {
+
+const registerWorker = () => {
     if ('serviceWorker' in navigator) {
         try {
-            navigator.serviceWorker.register('./sw.js')
+            navigator.serviceWorker.register('./sw.js');
+            console.log('Service Worker Registration Successful');
         } catch (e) {
             console.log('Service Worker Registration Failed');
         }
-    }
+    } else {
+        console.warn('Service Worker is not supported');
+    } 
 }
 
-// function registerServiceWorker() {
-//     if ('serviceWorker' in navigator) {
-//         navigator.serviceWorker.register('./sw.js').then(reg => {
-//             console.log('Registration successful', reg);
-//         })
-//             .catch(e => console.error('Error during service worker registration:', e));
-//     } else {
-//         console.warn('Service Worker is not supported');
-//     }
-// }
 
-function btnClick(){
+const btnClick = () => {
     let review = document.getElementById('review');
     let q = document.getElementById("q").value;
     let city = document.getElementById("city");
@@ -38,7 +32,6 @@ function btnClick(){
     let visible = document.getElementById('visible');
     let sunrise = document.getElementById('sunrise');
     let sunset = document.getElementById('sunset');    
-    console.log(q);
     
     city.innerHTML = "";
     main.innerHTML = "";
@@ -50,60 +43,60 @@ function btnClick(){
     sunset.innerHTML = 'Sunset: ';
     wind.innerHTML = 'Wind: ';
 
-    fetch("https://api.openweathermap.org/data/2.5/weather?q=" + `${q}` + "&appid=" + `${apiKey}`)
+    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${q}&appid=${apiKey}&units=metric`)
     .then(res => res.json())
     .then(resp => {
         localStorage.setItem("Weda-v1", JSON.stringify(resp));
         review.classList.add('show');
-        icon.src = "https://openweathermap.org/img/wn/" + `${resp.weather[0].icon}` + "@2x.png";
-        // icon.style.width = '150px';
-        // icon.style.height = '150px';
-
+        icon.src = `https://openweathermap.org/img/wn/${resp.weather[0].icon}@2x.png`;
         city.innerHTML = resp.name + ", " + resp.sys.country;
         main.innerHTML = resp.weather[0].main;
-        temp.innerHTML += resp.main.temp + '&deg;';
-        pressure.innerHTML += resp.main.pressure + "Pa";
-        humid.innerHTML += resp.main.humidity + '%';
-        visible.innerHTML += resp.visibility;
-        sunrise.innerHTML += resp.sys.sunrise;
-        sunset.innerHTML += resp.sys.sunset;
-        wind.innerHTML += windDetr(resp.wind.deg) +" " + resp.wind.speed + 'Km/h';
-
+        temp.innerHTML += resp.main.temp + '&#8451;';
+        pressure.innerHTML += (resp.main.pressure * 0.0145038).toFixed(2) + " psi";
+        humid.innerHTML += resp.main.humidity + '&percnt;';
+        visible.innerHTML += `${resp.visibility / 1000}KM` ;
+        sunrise.innerHTML += utcTimeConv(parseInt(resp.sys.sunrise+"000"));
+        sunset.innerHTML += utcTimeConv(parseInt(resp.sys.sunset+"000"));
+        wind.innerHTML += `${resp.wind.speed}KM ${windDetr(resp.wind.deg)}`;
+        
+        console.log(`
+        ${resp.visibility},
+        ${new Date(parseInt(resp.sys.sunrise+"000"))},
+        ${new Date(parseInt(resp.sys.sunset+"000"))}
+        `);
     });
 }
-function windDetr(value) {
+const windDetr = (value) => {
     let dir = '';
-    if (value < 360){
-        dir = 'NW';
-    }
-    else if (value === 270){
-        dir = 'W';
-    }
-    else if (value < 270){
-        dir = 'SW';
-    }
-    else if (value === 180){
-        dir = 'S';
-    }
-    else if (value < 180){
-        dir = 'SE';
-    }
-    else if (value === 90){
-        dir = 'E';
-    }
-    else if (value < 90){
+    if (value === 0){
+        dir = 'North';
+    } else if (value < 90){
         dir = 'NE';
+    } else if (value === 90){
+        dir = 'East';
+    } else if (value < 180){
+        dir = 'SE';
+    } else if (value === 180){
+        dir = 'South';
+    } else if (value < 270){
+        dir = 'SW';
+    } else if (value === 270){
+        dir = 'West';
+    } else {
+        dir = "NW"
     }
-    else if (value === 0 || 360){
-        dir = 'N';
-    }
+   
     return dir;    
 }
-//         const dIcon = document.createElement("img");
-//         dIcon.src =  
-//         
-//         dIcon.style.float = 'left';
 
-//        
-//         
-// }
+// To convert the fetched UTC time.
+const utcTimeConv = UTC => {
+    if(new Date(UTC).getHours() > 12) {
+        return `${new Date(UTC).getHours() - 12}:${new Date(UTC).getMinutes()} PM`;
+    } else if(new Date(UTC).getHours() === 12) {
+        return `${new Date(UTC).getHours()}:${new Date(UTC).getMinutes()} PM`;
+    } else if(new Date(UTC).getHours() <= 12) {
+        return `${new Date(UTC).getHours()}:${new Date(UTC).getMinutes()} AM`;
+    }
+}
+// console.log(utcTimeConv(new Date()));
