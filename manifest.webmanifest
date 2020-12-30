@@ -6,7 +6,7 @@
     "background_color": "#fff",
     "description": "A weather fetching app.",
     "orientation": "portrait",
-    "theme_color": "green",
+    "theme_color": "lightgreen",
     "icons": [
         {
             "src": "./Images/pers195.png",
