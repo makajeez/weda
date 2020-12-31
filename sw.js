@@ -28,13 +28,13 @@ self.addEventListener('fetch', async event => {
     }
 });
 
-async function cacheFirst(req) {
+const cacheFirst = async req => {
     const cache = await caches.open(cacheName);
     const cached =  await cache.match(req);
     return cached || fetch(req);
 }
 
-async function networkThenCache(req) {
+const networkThenCache = async req => {
     const cache = await caches.open(cacheName);
     try {
         const newOne = await fetch(req);
