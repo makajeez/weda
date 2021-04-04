@@ -55,8 +55,9 @@ input::placeholder {
     background: white;
     color: skyblue;
     height: 30px;
-    display: block;
-    float:right;
+    display: inline-block;
+    /* float: none; */
+    /* display: block; */
     border: .2px solid transparent;
     cursor: pointer;
     margin-bottom: 15px;
