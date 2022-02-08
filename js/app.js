@@ -59,11 +59,6 @@ const btnClick = () => {
         sunset.innerHTML += utcTimeConv(parseInt(resp.sys.sunset+"000"));
         wind.innerHTML += `${resp.wind.speed}KM ${windDetr(resp.wind.deg)}`;
         
-        console.log(`
-        ${resp.visibility},
-        ${new Date(parseInt(resp.sys.sunrise+"000"))},
-        ${new Date(parseInt(resp.sys.sunset+"000"))}
-        `);
     });
 }
 const windDetr = (value) => {
@@ -99,4 +94,3 @@ const utcTimeConv = UTC => {
         return `${new Date(UTC).getHours()}:${new Date(UTC).getMinutes()} AM`;
     }
 }
-// console.log(utcTimeConv(new Date()));
